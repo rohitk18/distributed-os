@@ -1,0 +1,80 @@
+{
+  "format": 1,
+  "restore": {
+    "/mnt/d/Programming/distributed-os/project1/proj1/proj1.fsproj": {}
+  },
+  "projects": {
+    "/mnt/d/Programming/distributed-os/project1/proj1/proj1.fsproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/mnt/d/Programming/distributed-os/project1/proj1/proj1.fsproj",
+        "projectName": "proj1",
+        "projectPath": "/mnt/d/Programming/distributed-os/project1/proj1/proj1.fsproj",
+        "packagesPath": "/home/rohitk18/.nuget/packages/",
+        "outputPath": "/mnt/d/Programming/distributed-os/project1/proj1/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/rohitk18/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "dependencies": {
+            "Akka": {
+              "target": "Package",
+              "version": "[1.4.10, )",
+              "generatePathProperty": true
+            },
+            "Akka.FSharp": {
+              "target": "Package",
+              "version": "[1.4.10, )",
+              "generatePathProperty": true
+            },
+            "Akka.Remote": {
+              "target": "Package",
+              "version": "[1.4.10, )",
+              "generatePathProperty": true
+            },
+            "Akka.TestKit": {
+              "target": "Package",
+              "version": "[1.4.10, )",
+              "generatePathProperty": true
+            },
+            "FSharp.Core": {
+              "target": "Package",
+              "version": "[4.7.2, )",
+              "generatePathProperty": true
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.1.402/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
