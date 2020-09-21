@@ -2,6 +2,8 @@
 open Akka.Actor
 open Akka.FSharp
 
+type Bint = Numerics.BigInteger
+
 let sumOfSquares (n:int):int =
     (* Sum of squares of positive integers from 1 to n (including) *)
     match n with
@@ -15,14 +17,18 @@ let sumOfSquaresRange (n:int,k:int):int =
     | 1 -> sumOfSquares n
     | _ -> sumOfSquares(n+k-1) - sumOfSquares(n-1)
 
+// let checkPerfectSquare (n:bigint):bool =
+//     (* Sum of squares of positive integers from 1 to n (including) *)
+//     let sqroot=sqrt (float n)
+//     let number = truncate sqroot
+//     number*number= (float)n 
+
 
 [<EntryPoint>]
 let main argv =
-    printfn "Hello World from F#!"
-
-// defined unsigned int to input numbers since only positive integers are being involved
-    let n:int = int argv.[0]
-    let k:int = int argv.[1]
+    // get arguments from command line as big integers
+    let n = int argv.[0]
+    let k = int argv.[1]
     Console.WriteLine("{0}",sumOfSquaresRange(n,k))
 
     let rootSystem = ActorSystem.Create("Proj1")
@@ -40,13 +46,17 @@ let main argv =
     // masterActor <! "F#!"
     *)
 
-    let masterActor calculators (mailbox:Actor<_>) = 
+    let masterActor (calculators:List<_>) (mailbox:Actor<_>) = 
         let rec loop() = actor {
             let! message = mailbox.Receive()
             match box message with
             // | :? string as msg -> printfn "ScalarValuePrinter: received String %s" msg
             | :? string as msg -> 
                 // for each calculator send message "Calculate" executes calculator actors
+                printfn "Message at master: %s" msg
+                calculators
+                |> List.map(fun calc -> 
+                                calc <! msg)
             | :? int as msg -> printfn "ScalarValuePrinter: received Int %i" msg
             | _ -> ()
             return! loop()
@@ -80,13 +90,19 @@ let main argv =
 
 
     // let maCalculators = spawn rootSystem "ma-calculators" <| calculator maRef n
-    // let maCalculators = spawn rootSystem "ma-calculators" <| calculator mareciever n
+    // let maCalculators = spawn rootSystem "ma-calculators" <| calculator maReceiver n
+    // let mac1 = spawn rootSystem "ma-calculators-1" <| calculator maReceiver 1
+    // let mac2 = spawn rootSystem "ma-calculators-2" <| calculator maReceiver 2
     let maCalculators = 
         [1 .. n]
         |> List.map(fun id ->   
-                        let sid = "ma-calc-%A" id 
-                        spawn rootSystem sid  <| calculator mareceiver id)
+                        // printfn "%i" id
+                        let sid = string id
+                        let cs = "ma-calc-" + sid
+                        // printfn "%s" cs )
+                        spawn rootSystem cs  <| calculator maReceiver id)
     
+    // let maRef = spawn rootSystem "master-actor" <| masterActor [mac1,mac2]
     let maRef = spawn rootSystem "master-actor" <| masterActor maCalculators
     
     maRef <! "Knock knock!"
