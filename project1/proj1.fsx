@@ -1,22 +1,14 @@
-// #I "/home/rohitk18/.nuget/packages"
-#r "nuget: Akka.dll"
-// #r "Akka.FSharp.dll"
+#time "on"
+#load "Bootstrap.fsx"
 
 open System
 open Akka.Actor
-open Akka.Configuration
 open Akka.FSharp
 
-let system = ActorSystem.Create("FSharp")
+// type Bint = Numerics.BigInteger
 
-// type EchoServer =
-//     inherit Actor
+for arg in fsi.CommandLineArgs do
+    printfn "%s" arg
 
-//     override x.OnReceive message =
-//         match message with
-//         | :? string as msg -> printfn "Hello %s" msg
-//         | _ ->  failwith "unknown message"
-
-// let echoServer = system.ActorOf(Props(typedefof<EchoServer>, Array.empty))
-
-// echoServer <! "F#!"
+let n:bigint = bigint fsi.CommandLineArgs.[1]
+let k:bigint = bigint fsi.CommandLineArgs.[2]

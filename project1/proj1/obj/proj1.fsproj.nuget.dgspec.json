@@ -1,25 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "/mnt/d/Programming/distributed-os/project1/proj1/proj1.fsproj": {}
+    "D:\\Programming\\distributed-os\\project1\\proj1\\proj1.fsproj": {}
   },
   "projects": {
-    "/mnt/d/Programming/distributed-os/project1/proj1/proj1.fsproj": {
+    "D:\\Programming\\distributed-os\\project1\\proj1\\proj1.fsproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/mnt/d/Programming/distributed-os/project1/proj1/proj1.fsproj",
+        "projectUniqueName": "D:\\Programming\\distributed-os\\project1\\proj1\\proj1.fsproj",
         "projectName": "proj1",
-        "projectPath": "/mnt/d/Programming/distributed-os/project1/proj1/proj1.fsproj",
-        "packagesPath": "/home/rohitk18/.nuget/packages/",
-        "outputPath": "/mnt/d/Programming/distributed-os/project1/proj1/obj/",
+        "projectPath": "D:\\Programming\\distributed-os\\project1\\proj1\\proj1.fsproj",
+        "packagesPath": "C:\\Users\\krohi\\.nuget\\packages\\",
+        "outputPath": "D:\\Programming\\distributed-os\\project1\\proj1\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/rohitk18/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\krohi\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -51,6 +53,11 @@
               "version": "[1.4.10, )",
               "generatePathProperty": true
             },
+            "Extreme.Numerics": {
+              "target": "Package",
+              "version": "[7.0.15, )",
+              "generatePathProperty": true
+            },
             "FSharp.Core": {
               "target": "Package",
               "version": "[4.7.2, )",
@@ -72,7 +79,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.1.402/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.402\\RuntimeIdentifierGraph.json"
         }
       }
     }

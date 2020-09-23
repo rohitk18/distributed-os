@@ -4,6 +4,7 @@
 open System
 open Akka.Actor
 open Akka.FSharp
+open Akka.Configuration
 
 type MessageObject = CommandObject of startnum:bigint * size:bigint
 
@@ -23,6 +24,30 @@ let sumOfSquaresRange (n:bigint,k:bigint):bool =
     if n.IsZero then false
     elif n.IsOne then k |> sumOfSquares |> checkSquare
     else sumOfSquares(n+k-1I) - sumOfSquares(n-1I) |> checkSquare
+
+let configuration = 
+    ConfigurationFactory.ParseString(
+        @"akka {
+            log-config-on-start : on
+            stdout-loglevel : DEBUG
+            loglevel : ERROR
+            actor {
+                provider = ""Akka.Remote.RemoteActorRefProvider, Akka.Remote""
+                debug : {
+                    receive : on
+                    autoreceive : on
+                    lifecycle : on
+                    event-stream : on
+                    unhandled : on
+                }
+            }
+            remote {
+                helios.tcp {
+                    port = 8777
+                    hostname = localhost
+                }
+            }
+        }")
 
 let n:bigint = System.Numerics.BigInteger.Parse fsi.CommandLineArgs.[1]
 let k:bigint = System.Numerics.BigInteger.Parse fsi.CommandLineArgs.[2]
@@ -47,7 +72,7 @@ let calculator (mailbox:Actor<_>) =
     }
     loop ()
 
-let rootSystem = ActorSystem.Create("Proj1") // Actor System
+let rootSystem = ActorSystem.Create("RemoteProj1",configuration) // Actor System
 
 let calcs = 
         [1I .. size .. n]
@@ -55,14 +80,22 @@ let calcs =
             let sid = string id
             let cs = "ma-calc-" + sid
             spawn rootSystem cs calculator) // Calculator Actors Creation
+    
+let calcRemotes = 
+    [1I .. size .. n]
+        |> List.map(fun id ->   
+            let sid = string id
+            let cs = "ma-calc-" + sid
+            rootSystem.ActorSelection("akka.tcp://RemoteProj1@localhost:8777/user/" + cs))
 
 // Print output
 let mutable reqs:Async<bigint list> list = []
 let mutable response:bigint list = []
-for i in 0..calcs.Length-1 do
-    reqs <- (calcs.[i] <? CommandObject((bigint i)*size+1I,size)) :: reqs
+for i in 0..calcRemotes.Length-1 do
+    reqs <- (calcRemotes.[i] <? CommandObject((bigint i)*size+1I,size)) :: reqs
+
 
 for request in reqs do
     response <- Async.RunSynchronously request
     for i in response do
-        printfn "%A" i
+        printfn "%A" i 

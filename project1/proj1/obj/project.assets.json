@@ -145,6 +145,19 @@
           "lib/netstandard1.3/DotNetty.Transport.dll": {}
         }
       },
+      "Extreme.Numerics/7.0.15": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Win32.Registry": "4.5.0",
+          "System.Runtime.Loader": "4.3.0"
+        },
+        "compile": {
+          "lib/netcoreapp2.1/Extreme.Numerics.dll": {}
+        },
+        "runtime": {
+          "lib/netcoreapp2.1/Extreme.Numerics.dll": {}
+        }
+      },
       "FSharp.Core/4.7.2": {
         "type": "package",
         "compile": {
@@ -299,6 +312,29 @@
         },
         "compile": {
           "ref/netstandard1.3/Microsoft.Win32.Primitives.dll": {}
+        }
+      },
+      "Microsoft.Win32.Registry/4.5.0": {
+        "type": "package",
+        "dependencies": {
+          "System.Security.AccessControl": "4.5.0",
+          "System.Security.Principal.Windows": "4.5.0"
+        },
+        "compile": {
+          "ref/netstandard2.0/Microsoft.Win32.Registry.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.Win32.Registry.dll": {}
+        },
+        "runtimeTargets": {
+          "runtimes/unix/lib/netstandard2.0/Microsoft.Win32.Registry.dll": {
+            "assetType": "runtime",
+            "rid": "unix"
+          },
+          "runtimes/win/lib/netstandard2.0/Microsoft.Win32.Registry.dll": {
+            "assetType": "runtime",
+            "rid": "win"
+          }
         }
       },
       "Microsoft.Win32.SystemEvents/4.7.0": {
@@ -1387,6 +1423,20 @@
           }
         }
       },
+      "System.Runtime.Loader/4.3.0": {
+        "type": "package",
+        "dependencies": {
+          "System.IO": "4.3.0",
+          "System.Reflection": "4.3.0",
+          "System.Runtime": "4.3.0"
+        },
+        "compile": {
+          "ref/netstandard1.5/System.Runtime.Loader.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.5/System.Runtime.Loader.dll": {}
+        }
+      },
       "System.Runtime.Numerics/4.3.0": {
         "type": "package",
         "dependencies": {
@@ -2038,6 +2088,34 @@
         "lib/netstandard1.3/DotNetty.Transport.xml"
       ]
     },
+    "Extreme.Numerics/7.0.15": {
+      "sha512": "utONa0YQrSANAbuQXJYSvQiXLtAjVvqOyO0dqqwLvgZsh8e9BeqZxLPh+PyhLiBCrMjwzwhjH5GFmR8dXThKXA==",
+      "type": "package",
+      "path": "extreme.numerics/7.0.15",
+      "hasTools": true,
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "extreme.numerics.7.0.15.nupkg.sha512",
+        "extreme.numerics.nuspec",
+        "lib/net35/Extreme.Numerics.dll",
+        "lib/net35/Extreme.Numerics.xml",
+        "lib/net40/Extreme.Numerics.dll",
+        "lib/net40/Extreme.Numerics.xml",
+        "lib/net46/Extreme.Numerics.dll",
+        "lib/net46/Extreme.Numerics.xml",
+        "lib/netcoreapp1.1/Extreme.Numerics.dll",
+        "lib/netcoreapp1.1/Extreme.Numerics.xml",
+        "lib/netcoreapp2.1/Extreme.Numerics.dll",
+        "lib/netcoreapp2.1/Extreme.Numerics.xml",
+        "lib/netstandard1.3/Extreme.Numerics.dll",
+        "lib/netstandard1.3/Extreme.Numerics.xml",
+        "lib/netstandard2.0/Extreme.Numerics.dll",
+        "lib/netstandard2.0/Extreme.Numerics.xml",
+        "readme.txt",
+        "tools/Extreme.LicenseManager.exe"
+      ]
+    },
     "FSharp.Core/4.7.2": {
       "sha512": "w3XFVTnyZUbC8e2QT6a85ern6y7eQPPk+MYemz1FP0iBfgZcembL+wmo5cIZ1kxB8jfoXC8Q9KVkOMsGpkBKbA==",
       "type": "package",
@@ -2245,6 +2323,46 @@
         "ref/xamarinmac20/_._",
         "ref/xamarintvos10/_._",
         "ref/xamarinwatchos10/_._"
+      ]
+    },
+    "Microsoft.Win32.Registry/4.5.0": {
+      "sha512": "+FWlwd//+Tt56316p00hVePBCouXyEzT86Jb3+AuRotTND0IYn0OO3obs1gnQEs/txEnt+rF2JBGLItTG+Be6A==",
+      "type": "package",
+      "path": "microsoft.win32.registry/4.5.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net46/Microsoft.Win32.Registry.dll",
+        "lib/net461/Microsoft.Win32.Registry.dll",
+        "lib/netstandard1.3/Microsoft.Win32.Registry.dll",
+        "lib/netstandard2.0/Microsoft.Win32.Registry.dll",
+        "microsoft.win32.registry.4.5.0.nupkg.sha512",
+        "microsoft.win32.registry.nuspec",
+        "ref/net46/Microsoft.Win32.Registry.dll",
+        "ref/net461/Microsoft.Win32.Registry.dll",
+        "ref/net461/Microsoft.Win32.Registry.xml",
+        "ref/netstandard1.3/Microsoft.Win32.Registry.dll",
+        "ref/netstandard1.3/Microsoft.Win32.Registry.xml",
+        "ref/netstandard1.3/de/Microsoft.Win32.Registry.xml",
+        "ref/netstandard1.3/es/Microsoft.Win32.Registry.xml",
+        "ref/netstandard1.3/fr/Microsoft.Win32.Registry.xml",
+        "ref/netstandard1.3/it/Microsoft.Win32.Registry.xml",
+        "ref/netstandard1.3/ja/Microsoft.Win32.Registry.xml",
+        "ref/netstandard1.3/ko/Microsoft.Win32.Registry.xml",
+        "ref/netstandard1.3/ru/Microsoft.Win32.Registry.xml",
+        "ref/netstandard1.3/zh-hans/Microsoft.Win32.Registry.xml",
+        "ref/netstandard1.3/zh-hant/Microsoft.Win32.Registry.xml",
+        "ref/netstandard2.0/Microsoft.Win32.Registry.dll",
+        "ref/netstandard2.0/Microsoft.Win32.Registry.xml",
+        "runtimes/unix/lib/netstandard2.0/Microsoft.Win32.Registry.dll",
+        "runtimes/win/lib/net46/Microsoft.Win32.Registry.dll",
+        "runtimes/win/lib/net461/Microsoft.Win32.Registry.dll",
+        "runtimes/win/lib/netstandard1.3/Microsoft.Win32.Registry.dll",
+        "runtimes/win/lib/netstandard2.0/Microsoft.Win32.Registry.dll",
+        "useSharedDesignerContext.txt",
+        "version.txt"
       ]
     },
     "Microsoft.Win32.SystemEvents/4.7.0": {
@@ -5108,6 +5226,38 @@
         "system.runtime.interopservices.runtimeinformation.nuspec"
       ]
     },
+    "System.Runtime.Loader/4.3.0": {
+      "sha512": "DHMaRn8D8YCK2GG2pw+UzNxn/OHVfaWx7OTLBD/hPegHZZgcZh3H6seWegrC4BYwsfuGrywIuT+MQs+rPqRLTQ==",
+      "type": "package",
+      "path": "system.runtime.loader/4.3.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "ThirdPartyNotices.txt",
+        "dotnet_library_license.txt",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net462/_._",
+        "lib/netstandard1.5/System.Runtime.Loader.dll",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "lib/xamarintvos10/_._",
+        "lib/xamarinwatchos10/_._",
+        "ref/netstandard1.5/System.Runtime.Loader.dll",
+        "ref/netstandard1.5/System.Runtime.Loader.xml",
+        "ref/netstandard1.5/de/System.Runtime.Loader.xml",
+        "ref/netstandard1.5/es/System.Runtime.Loader.xml",
+        "ref/netstandard1.5/fr/System.Runtime.Loader.xml",
+        "ref/netstandard1.5/it/System.Runtime.Loader.xml",
+        "ref/netstandard1.5/ja/System.Runtime.Loader.xml",
+        "ref/netstandard1.5/ko/System.Runtime.Loader.xml",
+        "ref/netstandard1.5/ru/System.Runtime.Loader.xml",
+        "ref/netstandard1.5/zh-hans/System.Runtime.Loader.xml",
+        "ref/netstandard1.5/zh-hant/System.Runtime.Loader.xml",
+        "system.runtime.loader.4.3.0.nupkg.sha512",
+        "system.runtime.loader.nuspec"
+      ]
+    },
     "System.Runtime.Numerics/4.3.0": {
       "sha512": "yMH+MfdzHjy17l2KESnPiF2dwq7T+xLnSJar7slyimAkUh/gTrS9/UQOtv7xarskJ2/XDSNvfLGOBQPjL7PaHQ==",
       "type": "package",
@@ -6411,28 +6561,31 @@
       "Akka.FSharp >= 1.4.10",
       "Akka.Remote >= 1.4.10",
       "Akka.TestKit >= 1.4.10",
+      "Extreme.Numerics >= 7.0.15",
       "FSharp.Core >= 4.7.2"
     ]
   },
   "packageFolders": {
-    "/home/rohitk18/.nuget/packages/": {}
+    "C:\\Users\\krohi\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/mnt/d/Programming/distributed-os/project1/proj1/proj1.fsproj",
+      "projectUniqueName": "D:\\Programming\\distributed-os\\project1\\proj1\\proj1.fsproj",
       "projectName": "proj1",
-      "projectPath": "/mnt/d/Programming/distributed-os/project1/proj1/proj1.fsproj",
-      "packagesPath": "/home/rohitk18/.nuget/packages/",
-      "outputPath": "/mnt/d/Programming/distributed-os/project1/proj1/obj/",
+      "projectPath": "D:\\Programming\\distributed-os\\project1\\proj1\\proj1.fsproj",
+      "packagesPath": "C:\\Users\\krohi\\.nuget\\packages\\",
+      "outputPath": "D:\\Programming\\distributed-os\\project1\\proj1\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/rohitk18/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\krohi\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp3.1"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -6464,6 +6617,11 @@
             "version": "[1.4.10, )",
             "generatePathProperty": true
           },
+          "Extreme.Numerics": {
+            "target": "Package",
+            "version": "[7.0.15, )",
+            "generatePathProperty": true
+          },
           "FSharp.Core": {
             "target": "Package",
             "version": "[4.7.2, )",
@@ -6485,7 +6643,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.1.402/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.402\\RuntimeIdentifierGraph.json"
       }
     }
   }
