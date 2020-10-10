@@ -18,14 +18,17 @@ let checkSquare (n:bigint):bool =
     let number = truncate sqroot
     number*number = (double)n 
 
+(*Returns boolean value if the checked sum is a square*)
 let sumOfSquaresRange (n:bigint,k:bigint):bool = 
     (* Sum of squares of integers from n to n+k-1 *)
     if n.IsZero then false
     elif n.IsOne then k |> sumOfSquares |> checkSquare
     else sumOfSquares(n+k-1I) - sumOfSquares(n-1I) |> checkSquare
 
+// Input
 let n:bigint = System.Numerics.BigInteger.Parse fsi.CommandLineArgs.[1]
 let k:bigint = System.Numerics.BigInteger.Parse fsi.CommandLineArgs.[2]
+
 let size:bigint = n/8I + 1I
 
 (* Calculator Actor model*)
@@ -47,14 +50,14 @@ let calculator (mailbox:Actor<_>) =
     }
     loop ()
 
-let rootSystem = ActorSystem.Create("Proj1") // Actor System
+let rootSystem = ActorSystem.Create("Proj1")
 
 let calcs = 
         [1I .. size .. n]
         |> List.map(fun id ->   
             let sid = string id
             let cs = "ma-calc-" + sid
-            spawn rootSystem cs calculator) // Calculator Actors Creation
+            spawn rootSystem cs calculator) // Calculator Actors
 
 // Print output
 let mutable reqs:Async<bigint list> list = []

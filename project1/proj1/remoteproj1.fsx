@@ -79,14 +79,14 @@ let calcs =
         |> List.map(fun id ->   
             let sid = string id
             let cs = "ma-calc-" + sid
-            spawn rootSystem cs calculator) // Calculator Actors Creation
+            spawn rootSystem cs calculator) // Calculator Actors
     
 let calcRemotes = 
     [1I .. size .. n]
         |> List.map(fun id ->   
             let sid = string id
             let cs = "ma-calc-" + sid
-            rootSystem.ActorSelection("akka.tcp://RemoteProj1@localhost:8777/user/" + cs))
+            rootSystem.ActorSelection("akka.tcp://RemoteProj1@localhost:8777/user/" + cs)) // Calculator Remote Actors 
 
 // Print output
 let mutable reqs:Async<bigint list> list = []
