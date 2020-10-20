@@ -20,6 +20,7 @@ type Message =
     | Discard of neighbour:IActorRef
 
 
+
 [<EntryPoint>]
 let main argv =
     // printfn "Hello World from F#!"
@@ -33,7 +34,7 @@ let main argv =
     let aliveActors:List<IActorRef> = new List<IActorRef>()
     let mutable terminatedNodeCount:int = 0
     let mutable messageCounter:int = 0
-    let numActorssqrt:int = Math.Round(Math.Sqrt(numActors |> float)) |> int
+    let numActorssqrt:int = Math.Ceiling(Math.Sqrt(numActors |> float)) |> int
     let mutable numActors = numActors
     match topology with
     | "2D" | "imp2D" -> numActors <- numActorssqrt * numActorssqrt
@@ -117,10 +118,9 @@ let main argv =
         nodeTerminated(worker)
         if neighbours.Count>0 then
             for i in 0 .. neighbours.Count-1 do
-                // let request = 
-                neighbours.[i] <! NeighbourTerminate
-                // let response = Async.RunSynchronously request
-                // printfn response
+                let request = neighbours.[i] <? NeighbourTerminate
+                let response = Async.RunSynchronously request
+                printfn response
         // mailbox.Context.Stop(mailbox.Self)
 
     let worker (nodeIndex: int) (w:float) (mailbox:Actor<_>) = 

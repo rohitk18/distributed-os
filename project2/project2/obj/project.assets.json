@@ -1406,19 +1406,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\spand\\.nuget\\packages\\": {}
+    "C:\\Users\\krohi\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\spand\\distributed-os\\project2\\project2\\project2.fsproj",
+      "projectUniqueName": "D:\\Programming\\distributed-os\\project2\\project2\\project2.fsproj",
       "projectName": "project2",
-      "projectPath": "C:\\Users\\spand\\distributed-os\\project2\\project2\\project2.fsproj",
-      "packagesPath": "C:\\Users\\spand\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\spand\\distributed-os\\project2\\project2\\obj\\",
+      "projectPath": "D:\\Programming\\distributed-os\\project2\\project2\\project2.fsproj",
+      "packagesPath": "C:\\Users\\krohi\\.nuget\\packages\\",
+      "outputPath": "D:\\Programming\\distributed-os\\project2\\project2\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\spand\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\krohi\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
