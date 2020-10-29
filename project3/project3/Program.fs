@@ -10,6 +10,9 @@ type NodeState =
     | NodeInitialized
 
 type NodeMessage =
+    | StartNetwork
+    | Route of message:NodeMessage * key:int * pos:int
+    | Join
     | Updated
 
 let ToBase4String (num:int,length:int) :string =
@@ -22,17 +25,19 @@ let ToBase4String (num:int,length:int) :string =
     s <- String('0',length-s.Length) + s
     s
 
-type Printer =
-    inherit Actor
-    override x.OnReceive message =
-        match message with
-        | :? string as msg -> printfn "%A" msg
-        | _ -> printfn "Unknown message"
+// let checkPosition (num:int):int = 
+
+
+// building network by adding routes in each node step by step
+let network = List<IActorRef>()
 
 let node (nodeId:int)(networkPos:int) (mailbox:Actor<_>) = 
+    // IMP note: the table data contains only nodeids i.e. random ids present in randomList. Its position/index in the randomList is the networkPosition.
     let smallLeaf:List<int> = new List<int>()
+    let mutable farthestSmallLeaf:int = -1
     let bigLeaf:List<int> = new List<int>()
     let routingTable:List<List<int>> = new List<List<int>>()
+    let neighbourhoodSet:List<int> = new List<int>()
     let mutable state:NodeState = NodeCreated
     let b4Id = ToBase4String(nodeId,8)
     for i = 1 to 4 do
@@ -41,6 +46,16 @@ let node (nodeId:int)(networkPos:int) (mailbox:Actor<_>) =
     let rec loop () = actor {
         let! message = mailbox.Receive()
         match message with
+        | StartNetwork ->
+            state <- NodeInitialized
+        | Route(msg,key,pos) ->
+            match msg with
+            | Join ->
+                if state=NodeInitialized then
+                    // if key
+                    printfn "node of key %A is joined" key
+                else printfn "please wait for node to join network"
+            | _ -> printfn "Received Unknown Request Message"
         | _ -> printfn "Received Unknown Message"
         return! loop()
     }
@@ -70,8 +85,15 @@ let main argv =
                     let name = "node" + string(randomList.[i])
                     spawn system name <| node i randomList.[i])
 
-    // building network by adding routes in each node step by step
-    let network = List<IActorRef>()
+    let startNode = nodes.[0]
+    startNode <! StartNetwork
+    startNode <! Route(Join,randomList.[1],1)
+    // for i in [1..numNodes-1] do
+    //     startNode <! Route(Join,randomList.[i],i)
+
+    let s = "String"
+    printfn "%A" s.[2]
+
     
     // printfn "%A" randomList
     // printfn "%A" nodes
