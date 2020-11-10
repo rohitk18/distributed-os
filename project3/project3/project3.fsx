@@ -14,6 +14,7 @@ type NodeMessage =
     | Route of message:NodeMessage * key:string
     | Join
     | SendState of receivernid:string * smallLeaf:List<string> * bigLeaf:List<string> * routingTable:List<List<string>> * neighbourhoodSet:List<string> * toNew:bool
+    | Updated
     | Print
 
 // global variables
@@ -107,7 +108,7 @@ let node (nodeId:int)(networkPos:int) (mailbox:Actor<_>) =
     let bigLeaf:List<string> = new List<string>()     // based on nodeid; max size 4; keeping list sorted
     let mutable fBigLeaf:string = null       // farthest node in big leaf based on nodeid
     let routingTable:List<List<string>> = new List<List<string>>()    // based on nodeid; num of rows equal to digit count; number of elements in each row = base = 4
-    let neighbourhoodSet:List<string> = new List<string>()    // based on positions; max size 8
+    let mutable neighbourhoodSet:List<string> = new List<string>()    // based on positions; max size 8
     let mutable maxAbsDiff:int = nodeSpace+2
     let mutable nodeMaxAbsDiff:string = null
     
@@ -117,7 +118,6 @@ let node (nodeId:int)(networkPos:int) (mailbox:Actor<_>) =
     // add keys to each list
     let addKeyToLeaf(key:string) =
         if key.CompareTo(b4Id) = -1 && not(smallLeaf.Contains(key)) then
-            printfn "smallleaf"
             if isNull fSmallLeaf then
                 smallLeaf.Add key
                 fSmallLeaf <- key
@@ -155,16 +155,18 @@ let node (nodeId:int)(networkPos:int) (mailbox:Actor<_>) =
                 i <- i+1    // next digit and also next row
     
     let addKeyToNS(key:string, keyNum:int) = 
-        let keyPos = GetPosition(keyNum)
+        let keyPos = GetPosition(keyNum)       
         if not(neighbourhoodSet.Contains(key)) then
-            if neighbourhoodSet.Count >= 8 && Math.Abs(keyPos-networkPos) <= maxAbsDiff then neighbourhoodSet.Remove nodeMaxAbsDiff |> ignore // will not find for first time since it doesn't exist but will find for subsequent routines since something will exist
-            neighbourhoodSet.Add key
+            let ns:List<string> = new List<string>(neighbourhoodSet)
+            if ns.Count >= 8 && Math.Abs(keyPos-networkPos) <= maxAbsDiff then ns.Remove nodeMaxAbsDiff |> ignore // will not find for first time since it doesn't exist but will find for subsequent routines since something will exist
+            ns.Add key
             maxAbsDiff <- 0
             for k in neighbourhoodSet do
                 let diff = Math.Abs(GetPosition(FromBase4String(k))-keyPos)
                 if diff > maxAbsDiff then
                     maxAbsDiff <- diff
                     nodeMaxAbsDiff <- k
+            neighbourhoodSet <- ns
 
     // according to assumed network    
     if networkPos>0 && state=NodeCreated then
@@ -185,18 +187,17 @@ let node (nodeId:int)(networkPos:int) (mailbox:Actor<_>) =
             // else printfn "actor selection test %A" b4Id
         | SendState(rnid,sl,bl,rt,ns,toNew)->
             // two types of nodes get received, newly joined nodes and already existing nodes
-            printfn "\nstate operations for %A" b4Id
-            printfn "sl %A" sl
-            printfn "bl %A" bl
-            printfn "rt %A" rt
-            printfn "ns %A" ns
+            // printfn "\nstate operations for %A" b4Id
+            // printfn "sl %A" sl
+            // printfn "bl %A" bl
+            // printfn "rt %A" rt
+            // printfn "ns %A" ns
             let nodeList:List<string> = new List<string>()
             nodeList.Add(rnid)
             for node in sl do nodeList.Add(node)
             for node in bl do if not(nodeList.Contains(node)) then nodeList.Add(node)
             for row in rt do for node in row do if not(nodeList.Contains(node)) && node<>"-1" then nodeList.Add(node)
             for node in ns do if not(nodeList.Contains(node)) then nodeList.Add(node)
-            printfn "nodelist %A" nodeList
             for node in nodeList do
                 if node <> b4Id then
                     let nodeNum = FromBase4String(node)
@@ -240,7 +241,12 @@ let node (nodeId:int)(networkPos:int) (mailbox:Actor<_>) =
                         // send state tables to the key node
                         mailbox.Context.System.ActorSelection("user/"+key) <! SendState(b4Id,smallLeaf,bigLeaf,routingTable,neighbourhoodSet,true)
                         printfn "node of key %A is joined" key
-                    else printfn "please wait for node to join network"
+                    else 
+                        printfn "please wait for node to join network"
+                        while state = NodeCreated do
+                            // printf ""
+                            Threading.Thread.Sleep 1000
+                        mailbox.Self <! Route(Join,key)
                 | _ -> printfn "Received Unknown Request Message"
         // for debugging
         | Print ->
@@ -274,9 +280,11 @@ startNode <! StartNetwork
 // Console.ReadLine()
 // nodes.[1] <! Route(Join,ToBase4String(randomList.[2],digitCount))
 for i in [1..numNodes-1] do
-    Threading.Thread.Sleep 100
+    Threading.Thread.Sleep(i*100)
     nodes.[i-1] <! Route(Join,ToBase4String(randomList.[i],digitCount))
     network.Add(nodes.[i])
+    if i%15=0 then Threading.Thread.Sleep 2000
+    if i%50=0 then Threading.Thread.Sleep 5000
 
 Console.ReadLine()
 
