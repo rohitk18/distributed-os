@@ -11,27 +11,34 @@ open Akka.FSharp
 open Typedef
 open Engine
 
+#time
 let mutable serverWork = true
-let mutable usersLoggedout = 1000
+let numUsers = int(fsi.CommandLineArgs.[1])
+if numUsers < 100 then
+    printfn "Please enter value greater than 100"
+    Environment.Exit 0
+// let numUsers = 1000
+let mutable usersLoggedout = numUsers + 1
+printfn "Preparing twitter database"
+Engine.twitsetdb(numUsers)
+printfn "Database ready"
 let rand = Random()
 let randBool () = 
     let r = rand.NextDouble()
     if r >= 0.6 then true else false    // retweet or tweet
-// random.Next(tweets.length) to select random tweet for retweet
 
 let sampleTweets = File.ReadAllLines "quotes.txt"
 let generateTweet () =
     let numHashtags = rand.Next(5)
     let numMentions = rand.Next(2)
     let hashtags:string list = [1..numHashtags] |> List.map (fun i-> "hashtag"+string(rand.Next(1,101)))
-    let mentions:string list = [1..numMentions] |> List.map (fun i-> "user"+string(rand.Next(1,1001)))
+    let mentions:string list = [1..numMentions] |> List.map (fun i-> "user"+string(rand.Next(1,numUsers + 1)))
     let tweet:string = sampleTweets.[rand.Next(sampleTweets.Length)]
     [[tweet];hashtags;mentions]
     
-
-let client server userString n (mailbox:Actor<_>) =
+let client server counterActor userString n (mailbox:Actor<_>) =
     let mutable user = User()
-    let mutable maxnum = 10 * int(Math.Round((float(1000-n))/1000.0,0))
+    let mutable maxnum = 10 * int(Math.Round((float(numUsers-n))/float(numUsers),0))
     let mutable tweets = new List<TweetMessage>()
     let mutable subscribers = new List<User>()
     let logstopwatch = Stopwatch()
@@ -52,15 +59,6 @@ let client server userString n (mailbox:Actor<_>) =
                 let tweetDetails = generateTweet()
                 server <! TweetRequest(user, tweetDetails.[0].[0],tweetDetails.[1],tweetDetails.[2],subscribers)
                 maxnum <- maxnum - 1
-                // while maxnum > 0 do
-                //     let tweetDetails = generateTweet()
-                //     if tweets.Count = 0 then
-                //         server <! TweetRequest(user, tweetDetails.[0].[0],tweetDetails.[1],tweetDetails.[2],subscribers)
-                //     else
-                //         if randBool() then server <! RetweetRequest(user,tweets.[rand.Next(tweets.Count)].tweet,subscribers)
-                //         else server <! TweetRequest(user, tweetDetails.[0].[0],tweetDetails.[1],tweetDetails.[2],subscribers)
-                //     maxnum <- maxnum - 1
-                //     Threading.Thread.Sleep 100
             | TweetUpdate (tweet,user,retweet) ->
                 let mutable mentioned = false
                 for mention in tweet.Mentions do
@@ -71,13 +69,13 @@ let client server userString n (mailbox:Actor<_>) =
             | UserLoggedOut ->
                 user <- User()
                 tweets.Clear()
-                usersLoggedout <- usersLoggedout - 1
+                counterActor <! UserLoggedOut
             | TweetChecker ->
                 if user.ID <> -1 then
                     idlestopwatch.Stop()
                     if idlestopwatch.ElapsedMilliseconds > 30000L then 
                         logstopwatch.Stop()
-                        server <! LogoutUser(user,logstopwatch.ElapsedMilliseconds)
+                        server <! LogoutUser(user,int(logstopwatch.ElapsedMilliseconds))
                     else
                         idlestopwatch.Start()
             | TweetTrigger ->
@@ -89,40 +87,63 @@ let client server userString n (mailbox:Actor<_>) =
                         if randBool() then server <! RetweetRequest(user,tweets.[rand.Next(tweets.Count)].tweet,subscribers)
                         else server <! TweetRequest(user, tweetDetails.[0].[0],tweetDetails.[1],tweetDetails.[2],subscribers)
                     maxnum <- maxnum - 1
-                    
+            | StartRegisterSim ->
+                logstopwatch.Start()
+                server <! RegisterUser(userString)
+            | UserRegistered(u) ->
+                user <- u
+                // for simulation only
+                let subs = [User(1,"user1");User(2,"user2");User(3,"user3");User(4,"user4");User(5,"user5");]
+                for sub in subs do
+                    server <! SubscribeUser(user,sub)
+                logstopwatch.Stop()
+                server <! LogoutUser(user,int(logstopwatch.ElapsedMilliseconds))
             | _-> printf "Unmatched response %A\n" message
             return! loop ()
         }
     loop()
 
+let counter (mailbox:Actor<_>) = 
+    let rec loop () =
+        actor {
+            let! message = mailbox.Receive()
+            match message with
+            | UserLoggedOut -> 
+                usersLoggedout <- usersLoggedout - 1
+            | _ -> printf "Unmatched response %A\n" message
+            return! loop ()
+        }
+    loop()
+
 let server = spawn rs "server" engine
-// (*
-// 1000 users
+let simcounter = spawn rs "counter" counter
+
 let clients = 
-    [1 .. 1000]
+    [1 .. numUsers]
     |> List.map(fun i ->
         let st = "client"+ string(i)
         let ust = "user" + string(i)
-        spawn rs st <| client server ust i)
+        spawn rs st <| client server simcounter ust i)
+
+let newuserid = numUsers + 1
+let newuserClient = spawn rs "newclient" <| client server simcounter "newuser" newuserid
+newuserClient <! StartRegisterSim
 
 Threading.Thread.Sleep 1000
 
 // simulation
-// for i in [0..9] do
-//     clients.[i] <! StartSimulation
-//     Threading.Thread.Sleep 100
 for c in clients do
     c <! StartSimulation
     Threading.Thread.Sleep 10
 
 while serverWork do
     serverWork <- usersLoggedout <> 0
-    // for i in [0..9] do
-    //     clients.[i] <! TweetTrigger
-    //     clients.[i] <! TweetChecker
     for c in clients do
         c <! TweetTrigger
         c <! TweetChecker
     Threading.Thread.Sleep 10
 
-// *)
+printfn "************************************************************************************"
+#time
+server <! SimulatorStats
+Threading.Thread.Sleep 1000

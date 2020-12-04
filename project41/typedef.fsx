@@ -27,11 +27,12 @@ type TweetMessage =
 
 type ServerRequest =
     | LoginUser of username: string
-    | LogoutUser of user:User * timeElapsed:int64
-    | RegisterUser
+    | LogoutUser of user:User * timeElapsed:int
+    | RegisterUser of username:string
     | SubscribeUser of cuser: User * suser: User
     | TweetRequest of cuser: User * tweet: string * hashtags: string list * mentions: string list * subscribers: List<User>
     | RetweetRequest of cuser: User * tweet: Tweet * subscribers:List<User>
+    | SimulatorStats
 
 type ServerResponse =
     | StartSimulation
@@ -40,6 +41,8 @@ type ServerResponse =
     | UserNotFound
     | UserLoggedOut
     | NotAuthorised
+    | UserRegistered of user:User
+    | UserExists of user:User
     | UserSubscribed
     | SubscriberNotFound
     | AlreadySubscribed
@@ -47,3 +50,4 @@ type ServerResponse =
     | TweetUpdate of tweet:Tweet * user:User * retweet:bool
     | TweetChecker
     | TweetTrigger
+    | StartRegisterSim

@@ -16,8 +16,9 @@
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <PkgMathNet_Numerics Condition=" '$(PkgMathNet_Numerics)' == '' ">C:\Users\krohi\.nuget\packages\mathnet.numerics\4.12.0</PkgMathNet_Numerics>
     <PkgFSharp_Core Condition=" '$(PkgFSharp_Core)' == '' ">C:\Users\krohi\.nuget\packages\fsharp.core\4.7.2</PkgFSharp_Core>
-    <PkgFSharp_Data Condition=" '$(PkgFSharp_Data)' == '' ">C:\Users\krohi\.nuget\packages\fsharp.data\3.3.3</PkgFSharp_Data>
+    <PkgMathNet_Numerics_FSharp Condition=" '$(PkgMathNet_Numerics_FSharp)' == '' ">C:\Users\krohi\.nuget\packages\mathnet.numerics.fsharp\4.12.0</PkgMathNet_Numerics_FSharp>
     <PkgAkka Condition=" '$(PkgAkka)' == '' ">C:\Users\krohi\.nuget\packages\akka\1.4.12</PkgAkka>
     <PkgAkka_FSharp Condition=" '$(PkgAkka_FSharp)' == '' ">C:\Users\krohi\.nuget\packages\akka.fsharp\1.4.12</PkgAkka_FSharp>
   </PropertyGroup>

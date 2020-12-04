@@ -1,15 +1,16 @@
 {
   "version": 2,
-  "dgSpecHash": "9lWnGYizkLmFytOw2nLF9QuFEEmGIlMClCzM2TkaV7ORQbgGRKeh4pmn5VaV6RsLpsvOCzeBpMRl6mQB2CxTPQ==",
+  "dgSpecHash": "zRBo2A8vSxF42YabhqdzEPEj6d4eXZdeL6JJ/xh9uNGpb0si9UIWvie5rh8+ztqrAB/ZlLbefiKAFVcbt+LPSg==",
   "success": true,
   "projectFilePath": "D:\\Programming\\distributed-os\\project41\\project41.fsproj",
   "expectedPackageFiles": [
     "C:\\Users\\krohi\\.nuget\\packages\\akka\\1.4.12\\akka.1.4.12.nupkg.sha512",
     "C:\\Users\\krohi\\.nuget\\packages\\akka.fsharp\\1.4.12\\akka.fsharp.1.4.12.nupkg.sha512",
     "C:\\Users\\krohi\\.nuget\\packages\\fsharp.core\\4.7.2\\fsharp.core.4.7.2.nupkg.sha512",
-    "C:\\Users\\krohi\\.nuget\\packages\\fsharp.data\\3.3.3\\fsharp.data.3.3.3.nupkg.sha512",
     "C:\\Users\\krohi\\.nuget\\packages\\fsharp.quotations.evaluator\\1.1.3\\fsharp.quotations.evaluator.1.1.3.nupkg.sha512",
     "C:\\Users\\krohi\\.nuget\\packages\\fspickler\\5.3.2\\fspickler.5.3.2.nupkg.sha512",
+    "C:\\Users\\krohi\\.nuget\\packages\\mathnet.numerics\\4.12.0\\mathnet.numerics.4.12.0.nupkg.sha512",
+    "C:\\Users\\krohi\\.nuget\\packages\\mathnet.numerics.fsharp\\4.12.0\\mathnet.numerics.fsharp.4.12.0.nupkg.sha512",
     "C:\\Users\\krohi\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
     "C:\\Users\\krohi\\.nuget\\packages\\microsoft.netcore.targets\\1.1.0\\microsoft.netcore.targets.1.1.0.nupkg.sha512",
     "C:\\Users\\krohi\\.nuget\\packages\\microsoft.win32.systemevents\\4.7.0\\microsoft.win32.systemevents.4.7.0.nupkg.sha512",

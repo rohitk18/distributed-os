@@ -1,12 +1,10 @@
-// #load "Bootstrap.fsx"
+#load "Bootstrap.fsx"
 
-// open System.Diagnostics
 open System
-// open System.Linq;
 open System.Collections.Generic
 open System.Data
 open System.IO
-// open FSharp.Data.CsvFile
+open MathNet.Numerics.Distributions
 
 let db:DataSet = new DataSet()
 let userTable:DataTable = new DataTable("Users")
@@ -100,8 +98,6 @@ let createRetweetTable () =
     retweetTable.PrimaryKey <- [|idColumn|]
     db.Tables.Add(retweetTable)
 
-
-
 let createHashtagTable () =
     let idColumn:DataColumn = new DataColumn()
     idColumn.ColumnName <- "id"
@@ -162,12 +158,12 @@ let createMentionTable() =
     mentionTable.PrimaryKey <- [|idColumn|]
     db.Tables.Add(mentionTable)
 
-let populateData () =
-    for i in 1..1000 do
+let populateData (n) =
+    for i in 1..n do
         let row:DataRow = userTable.NewRow()
         row.[1] <- "user" + (string) i
         userTable.Rows.Add(row)
-    
+    (*
     let subdata = File.ReadAllLines "subscribers.txt"
     for line in subdata do
         let row:DataRow = subscriberTable.NewRow()
@@ -175,19 +171,32 @@ let populateData () =
         row.[1] <- (int)ll.[1]
         row.[2] <- (int)ll.[2]
         subscriberTable.Rows.Add(row)
-        
-    
+    *)
+    let lim = if n > 10000 then 10000 else n
+    let samples = List<int>()
+    let mutable k = 0
+    while k < lim do
+        samples.Add(Zipf.Sample(1.0,100))
+        k <- k + 1
+    samples.Sort()
+    samples.Reverse()
+    let rand = Random()
+    for i in [1..lim] do
+        for j in [0..samples.[i-1]-1] do 
+            let mutable ri = rand.Next(1,n)
+            while ri=i do
+                ri<- rand.Next(1,n)
+            let row:DataRow = subscriberTable.NewRow()
+            row.[1] <- i
+            row.[2] <- ri
+            subscriberTable.Rows.Add(row)
 
-let makeDatabase () =
+let makeDatabase (n) =
     createUserTable()
     createSubscriberTable()
     createTweetTable()
+    createRetweetTable()
     createHashtagTable()
     createHashtagTweetTable()
     createMentionTable()
-    populateData()
-    
-// makeDatabase()
-
-// type Sub = CsvProvider<"subscribers.csv",HasHeaders=true>
-// let subdata = CsvFile.Load("subscribers.csv",hasHeaders=true)
+    populateData(n)

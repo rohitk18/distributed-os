@@ -81,18 +81,6 @@
           }
         }
       },
-      "FSharp.Data/3.3.3": {
-        "type": "package",
-        "dependencies": {
-          "FSharp.Core": "4.3.4"
-        },
-        "compile": {
-          "lib/netstandard2.0/FSharp.Data.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard2.0/FSharp.Data.dll": {}
-        }
-      },
       "FSharp.Quotations.Evaluator/1.1.3": {
         "type": "package",
         "dependencies": {
@@ -116,6 +104,28 @@
         },
         "runtime": {
           "lib/netstandard2.0/FsPickler.dll": {}
+        }
+      },
+      "MathNet.Numerics/4.12.0": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/MathNet.Numerics.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/MathNet.Numerics.dll": {}
+        }
+      },
+      "MathNet.Numerics.FSharp/4.12.0": {
+        "type": "package",
+        "dependencies": {
+          "FSharp.Core": "4.3.3",
+          "MathNet.Numerics": "4.12.0"
+        },
+        "compile": {
+          "lib/netstandard2.0/MathNet.Numerics.FSharp.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/MathNet.Numerics.FSharp.dll": {}
         }
       },
       "Microsoft.NETCore.Platforms/3.1.0": {
@@ -465,34 +475,6 @@
         "lib/netstandard2.0/zh-Hant/FSharp.Core.resources.dll"
       ]
     },
-    "FSharp.Data/3.3.3": {
-      "sha512": "O+fV9oPNktESFngvTzPIQUhTdQGNX0XYXToL1l7+3jE46Y7tp8Ux4FkTMzj8wa8QV07l4sY4pJ7bBppGDi3Lsw==",
-      "type": "package",
-      "path": "fsharp.data/3.3.3",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "fsharp.data.3.3.3.nupkg.sha512",
-        "fsharp.data.nuspec",
-        "lib/net45/FSharp.Data.DesignTime.dll",
-        "lib/net45/FSharp.Data.DesignTime.pdb",
-        "lib/net45/FSharp.Data.dll",
-        "lib/net45/FSharp.Data.pdb",
-        "lib/net45/FSharp.Data.xml",
-        "lib/netstandard2.0/FSharp.Data.DesignTime.dll",
-        "lib/netstandard2.0/FSharp.Data.DesignTime.pdb",
-        "lib/netstandard2.0/FSharp.Data.dll",
-        "lib/netstandard2.0/FSharp.Data.pdb",
-        "lib/netstandard2.0/FSharp.Data.xml",
-        "linqpad-samples/GitHub.linq",
-        "linqpad-samples/Jira.linq",
-        "linqpad-samples/TypeInference.linq",
-        "typeproviders/fsharp41/net45/FSharp.Data.DesignTime.dll",
-        "typeproviders/fsharp41/net45/FSharp.Data.DesignTime.pdb",
-        "typeproviders/fsharp41/netstandard2.0/FSharp.Data.DesignTime.dll",
-        "typeproviders/fsharp41/netstandard2.0/FSharp.Data.DesignTime.pdb"
-      ]
-    },
     "FSharp.Quotations.Evaluator/1.1.3": {
       "sha512": "kshHxfkN/6gwqaADveSN6G5hdpqkga/VklhpNlAsONovbE2YWL0HR3fRo7+wiBwof3E8ZTsmxPN2cqR+19XQaQ==",
       "type": "package",
@@ -525,6 +507,44 @@
         "lib/netstandard2.0/FsPickler.dll",
         "lib/netstandard2.0/FsPickler.pdb",
         "lib/netstandard2.0/FsPickler.xml"
+      ]
+    },
+    "MathNet.Numerics/4.12.0": {
+      "sha512": "U6R74mc1PHD3HbbevY5Z6AS07toye0PBooKPpCyD9sCc5HDPlRl+lmiWl+zy8L7IEHIH0Bvkx1sVqBY++5X5eA==",
+      "type": "package",
+      "path": "mathnet.numerics/4.12.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "icon.png",
+        "lib/net40/MathNet.Numerics.dll",
+        "lib/net40/MathNet.Numerics.xml",
+        "lib/net461/MathNet.Numerics.dll",
+        "lib/net461/MathNet.Numerics.xml",
+        "lib/netstandard1.3/MathNet.Numerics.dll",
+        "lib/netstandard1.3/MathNet.Numerics.xml",
+        "lib/netstandard2.0/MathNet.Numerics.dll",
+        "lib/netstandard2.0/MathNet.Numerics.xml",
+        "mathnet.numerics.4.12.0.nupkg.sha512",
+        "mathnet.numerics.nuspec"
+      ]
+    },
+    "MathNet.Numerics.FSharp/4.12.0": {
+      "sha512": "Ea7XRCvI0XpNUBCHMpNbJcyn3i9CUF2qO7g4UU6EEzNBI6ijQ9E5jc0b58v8X19x1XM56QuXXTEyGoMj7zwnFw==",
+      "type": "package",
+      "path": "mathnet.numerics.fsharp/4.12.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "icon.png",
+        "lib/net45/MathNet.Numerics.FSharp.dll",
+        "lib/net45/MathNet.Numerics.FSharp.xml",
+        "lib/netstandard1.6/MathNet.Numerics.FSharp.dll",
+        "lib/netstandard1.6/MathNet.Numerics.FSharp.xml",
+        "lib/netstandard2.0/MathNet.Numerics.FSharp.dll",
+        "lib/netstandard2.0/MathNet.Numerics.FSharp.xml",
+        "mathnet.numerics.fsharp.4.12.0.nupkg.sha512",
+        "mathnet.numerics.fsharp.nuspec"
       ]
     },
     "Microsoft.NETCore.Platforms/3.1.0": {
@@ -1443,7 +1463,8 @@
       "Akka >= 1.4.12",
       "Akka.FSharp >= 1.4.12",
       "FSharp.Core >= 4.7.2",
-      "FSharp.Data >= *"
+      "MathNet.Numerics >= 4.12.0",
+      "MathNet.Numerics.FSharp >= 4.12.0"
     ]
   },
   "packageFolders": {
@@ -1493,9 +1514,14 @@
             "version": "[4.7.2, )",
             "generatePathProperty": true
           },
-          "FSharp.Data": {
+          "MathNet.Numerics": {
             "target": "Package",
-            "version": "[*, )",
+            "version": "[4.12.0, )",
+            "generatePathProperty": true
+          },
+          "MathNet.Numerics.FSharp": {
+            "target": "Package",
+            "version": "[4.12.0, )",
             "generatePathProperty": true
           }
         },

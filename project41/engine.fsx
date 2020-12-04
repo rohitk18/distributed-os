@@ -4,7 +4,6 @@
 
 // open System.Diagnostics
 open System
-// open System.Linq;
 open System.Collections.Generic
 open System.Data
 open Akka.FSharp
@@ -15,7 +14,8 @@ open Database
 let rs = ActorSystem.Create("Twitter")
 
 let db = Database.db
-Database.makeDatabase ()
+let twitsetdb(numUsers) =
+    Database.makeDatabase (numUsers)
 
 let getTweetFromDB(id) =
     let ttable = db.Tables.["Tweets"]
@@ -77,9 +77,6 @@ let collectTweets (uid:int) =
     for mrow in mrows do
         let tid = int(string(mrow.["tweetid"]))
         if tids.Contains(tid) = false then
-        //     for t in tweetmsglist do
-        //         if t.tweet.ID = tid then t.mention <- true
-        // else
             let tweet:Tweet = getTweetFromDB(tid)
             let usid = int(string(ttable.Select("id = '"+string(tweet.ID)+"'").[0].["userid"]))
             let urow = utable.Select("id = '"+string(usid)+"'").[0]
@@ -90,7 +87,10 @@ let collectTweets (uid:int) =
 
 let engine (mailbox: Actor<_>) =
     let mutable loggedInUsers = new Dictionary<int,IActorRef>()
-
+    let mutable totalLogged = 0
+    let mutable totalTweets = 0
+    let mutable expectedToSend = 0
+    let mutable actualToSend = 0 
     let rec loop () =
         actor {
             let! message = mailbox.Receive()
@@ -119,24 +119,41 @@ let engine (mailbox: Actor<_>) =
                         if dataRows.Length > 0 then
                             let sub = User(int(string(dataRows.[0].["id"])),string(dataRows.[0].["username"]))
                             subscribers.Add(sub)                        
-                    // let tweets = collectTweets(user.ID)
                     loggedInUsers.Add(id,mailbox.Sender()) |> ignore
                     let tweetList = collectTweets(id)
                     printfn "%A: Logged in. Got %A tweets." username tweetList.Count
+                    totalLogged <- totalLogged + 1
                     mailbox.Sender() <! UserLogged(user,subscribers,tweetList)
             | LogoutUser (u,t) ->
                 if loggedInUsers.ContainsKey(u.ID) then
                     loggedInUsers.Remove(u.ID) |> ignore
                     printfn "%A: Logged Out. Log Session time is %A milliseconds" u.Username t
                     mailbox.Sender() <! UserLoggedOut
+            | RegisterUser(username) ->
+                let table = db.Tables.["Users"]
+                let expression = "username = '" + username + "'"
+                let dataRows = table.Select(expression)
+                if dataRows.Length = 0 then
+                    let row:DataRow = table.NewRow()
+                    row.["username"] <- username
+                    table.Rows.Add row
+                    printfn "New User %A is registered" username
+                    let u:User = User(int(string(row.["id"])),string(row.["username"]))
+                    loggedInUsers.Add(u.ID,mailbox.Sender()) |> ignore
+                    mailbox.Sender() <! UserRegistered(u)
+                else
+                    printfn "User already exists. Can't register"
+                    let u:User = User(int(string(dataRows.[0].["id"])),string(dataRows.[0].["username"]))
+                    mailbox.Sender() <! UserExists(u)
             // send list of subscribers, tweets, retweets
             | SubscribeUser (c, s) ->
                 if loggedInUsers.ContainsKey(c.ID) then
                     let table = db.Tables.["Users"]
-                    let exp = "id = '" + string (c.ID) + "'"
+                    let exp = "id = '" + string (s.ID) + "'"
                     let dataRows = table.Select(exp)
                     if dataRows.Length = 0 then
-                        mailbox.Sender() <! SubscriberNotFound
+                        printfn "%A: Subscriber Not Found" c.Username
+                        // mailbox.Sender() <! SubscriberNotFound
                     else
                         let table = db.Tables.["Subscribers"]
 
@@ -148,25 +165,25 @@ let engine (mailbox: Actor<_>) =
                             + "'"
 
                         let dataRows = table.Select(exp)
-                        if dataRows.Length = 0 then
-                            mailbox.Sender() <! AlreadySubscribed
+                        if dataRows.Length <> 0 then
+                            printfn "%A: Already subscribed" c.Username
+                            // mailbox.Sender() <! AlreadySubscribed
                         else
                             let row = table.NewRow()
                             row.["userid"] <- c.ID
                             row.["subscriberid"] <- s.ID
                             table.Rows.Add(row)
-                            mailbox.Sender() <! UserSubscribed
+                            printfn "%A: %A is added" c.Username s.Username
+                            // mailbox.Sender() <! UserSubscribed
                 // else
                 //     mailbox.Sender() <! NotAuthorised
             | TweetRequest (c, tweet, hashtags, mentions, subs) ->
-                // printfn "working %A %A" c.Username <| loggedInUsers.Contains(c.Username)
                 if loggedInUsers.ContainsKey(c.ID) then
                     let table = db.Tables.["Tweets"]
                     let tweetrow = table.NewRow()
                     tweetrow.["tweet"] <- tweet
                     tweetrow.["userid"] <- c.ID
                     table.Rows.Add tweetrow
-                    // printfn "tid:%A tweet:%A" tweetrow.["id"] tweetrow.["tweet"]
                     let mutable tweetHashtags = []
                     let mutable tweetMentions = []
                     let htable = db.Tables.["Hashtags"]
@@ -197,75 +214,45 @@ let engine (mailbox: Actor<_>) =
                             row.["userid"] <- u.ID
                             mtable.Rows.Add row
                     let tweetObject = Tweet(int(string(tweetrow.["id"])),string(tweet),tweetHashtags,tweetMentions)
-                    // let sids = db.Tables.["Subscribers"].Select("userid = '"+string(c.ID)+"'") |> Array.map(fun row -> int(string(row.["userid"]))) |> Array.toList
-                    // for sid in sids do
-                        // if loggedInUsers.ContainsKey(sid) then
-                            // loggedInUsers.[sid] <! TweetUpdate(tweetObject,c,false)
                     let mutable i = 0
                     for sub in subs do
                         if loggedInUsers.ContainsKey(sub.ID) then
                             loggedInUsers.[sub.ID] <! TweetUpdate(tweetObject,c,false)
                             i <- i + 1
-                    printfn "%A: Tweet sent to %A subscribers who are logged in currently" c.Username i
+                    printfn "%A: Tweet sent to %A logged in subscribers" c.Username i
+                    totalTweets <- totalTweets + 1
+                    expectedToSend <- expectedToSend + subs.Count
+                    actualToSend <- actualToSend + i
                     mailbox.Sender() <! TweetSent
                 // else
                 //     mailbox.Sender() <! NotAuthorised
             | RetweetRequest (c, tweet,subs) ->
                 if loggedInUsers.ContainsKey(c.ID) then
-                    // let num = db.Tables.["Tweets"].Rows.Count
                     let table = db.Tables.["Retweets"]
                     let row = table.NewRow()
                     row.["tweetid"] <- tweet.ID
                     row.["userid"] <- c.ID
                     table.Rows.Add row
-                    // let sids = db.Tables.["Subscribers"].Select("userid = '"+string(c.ID)+"'") |> Array.map(fun row -> int(string(row.["userid"]))) |> Array.toList
-                    // for sid in sids do
-                    //     if loggedInUsers.ContainsKey(sid) then
-                    //         loggedInUsers.[sid] <! TweetUpdate(tweet,c,true)
                     let mutable i = 0
                     for sub in subs do
                         if loggedInUsers.ContainsKey(sub.ID) then
                             loggedInUsers.[sub.ID] <! TweetUpdate(tweet,c,true)
                             i <- i + 1
-                    printfn "%A: Retweet sent to %A subscribers who are logged in currently" c.Username i
+                    printfn "%A: Retweet sent to %A logged in subscribers" c.Username i
+                    totalTweets <- totalTweets + 1
+                    expectedToSend <- expectedToSend + subs.Count
+                    actualToSend <- actualToSend + i
                     mailbox.Sender() <! TweetSent
                 // else
                 //     mailbox.Sender() <! NotAuthorised
-            | _ -> printfn "request unknown"
+            | SimulatorStats ->
+                printfn "************************************************************************************"
+                printfn "Total users logged to server: %A" totalLogged 
+                printfn "Total number of tweets sent by users: %A" totalTweets
+                printfn "Expected number of tweets to be received by users: %A" expectedToSend
+                printfn "Number of tweets received to logged users: %A" actualToSend
+            // | _ -> printfn "request unknown"
 
             return! loop ()
         }
     loop ()
-(*
-let server = spawn rs "server" engine
-
-let mutable luser: User = new User()
-
-let reqList: ServerRequest list =
-    [ LoginUser("user100")
-      Tweet(luser, "This is a demo tweet", [], []) ]
-
-for call in reqList do
-    let req: Async<ServerResponse> = server <? call
-    printfn "call"
-    let res = Async.RunSynchronously req
-    match res with
-    | UserLogged (user) ->
-        printfn "id:%A, username:%A" user.ID user.Username
-        luser <- user
-        printfn "%A" luser.Username
-    | TweetSent -> printfn "%A" res
-    | _ -> printfn "%A" res
-    Threading.Thread.Sleep 100
-// let req1:Async<ServerResponse> = server <? Tweet(luser,"This is a demo tweet",[],[])
-// let res1 = Async.RunSynchronously req1
-// match res1 with
-// | TweetSent -> printfn "%A" res
-// | _ -> printfn "%A" res
-
-let mutable serverStop = true
-while serverStop do
-    Threading.Thread.Sleep 1000
-Threading.Thread.Sleep 1000
-
-*)
