@@ -172,16 +172,16 @@ let populateData (n) =
         row.[2] <- (int)ll.[2]
         subscriberTable.Rows.Add(row)
     *)
-    let lim = if n > 10000 then 10000 else n
+    let lim = if n < 100 then n else 100
     let samples = List<int>()
     let mutable k = 0
-    while k < lim do
-        samples.Add(Zipf.Sample(1.0,100))
+    while k < n do
+        samples.Add(Zipf.Sample(1.0,lim))
         k <- k + 1
     samples.Sort()
     samples.Reverse()
     let rand = Random()
-    for i in [1..lim] do
+    for i in [1..n] do
         for j in [0..samples.[i-1]-1] do 
             let mutable ri = rand.Next(1,n)
             while ri=i do

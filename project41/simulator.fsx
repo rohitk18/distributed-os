@@ -14,10 +14,9 @@ open Engine
 #time
 let mutable serverWork = true
 let numUsers = int(fsi.CommandLineArgs.[1])
-if numUsers < 100 then
-    printfn "Please enter value greater than 100"
+if numUsers < 5 then
+    printfn "Please enter value greater than 5 (for better zipf distribution)."
     Environment.Exit 0
-// let numUsers = 1000
 let mutable usersLoggedout = numUsers + 1
 printfn "Preparing twitter database"
 Engine.twitsetdb(numUsers)
