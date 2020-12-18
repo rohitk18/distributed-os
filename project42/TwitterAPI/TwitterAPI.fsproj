@@ -6,6 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Typedef.fs" />
+    <Compile Include="Database.fs" />
+    <Compile Include="Engine.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
